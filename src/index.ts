@@ -1,6 +1,6 @@
 import { getInput, setFailed, info } from "@actions/core";
-import fetch from "node-fetch";
-import FormData from "form-data";
+const fetch = require("node-fetch");
+const FormData = require("form-data");
 import { createReadStream, existsSync } from "fs";
 
 export async function run() {

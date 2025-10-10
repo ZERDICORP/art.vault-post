@@ -1,5 +1,5 @@
 {
-  "name": "art.vault-post",
+  "name": "art-vault-post",
   "version": "1.0.0",
   "description": "Post your artifact to Art.Vault",
   "main": "dist/index.js",
@@ -12,6 +12,8 @@
     "node-fetch": "^2.7.0"
   },
   "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/node-fetch": "^2.6.7",
     "@vercel/ncc": "^0.38.1",
     "typescript": "^5.2.2"
   }
