@@ -1,5 +1,5 @@
 {
-  "name": "art-vault-post",
+  "name": "art.vault-post",
   "version": "1.0.0",
   "description": "Post your artifact to Art.Vault",
   "main": "dist/index.js",
