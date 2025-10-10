@@ -1,0 +1,25 @@
+name: "Test Art.Vault Upload"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create test artifact
+        run: |
+          echo "Test artifact content - $(date)" > test-artifact.txt
+          echo "Repository: ${{ github.repository }}" >> test-artifact.txt
+          echo "Commit: ${{ github.sha }}" >> test-artifact.txt
+
+      - name: Upload to Art.Vault
+        uses: ./
+        with:
+          vault-secret: ${{ secrets.VAULT_SECRET }}
+          project-name: "art-vault-post-test"
+          artifact-name: "test-artifact"
+          file-path: "./test-artifact.txt"

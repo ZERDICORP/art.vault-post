@@ -1,0 +1,25 @@
+name: "Post artifact to Art.Vault"
+description: "Post your artifact to 'Art.Vault' — a lightweight temporary storage for CI/CD artifacts built on Telegram."
+author: "Nikolay Anikin"
+
+inputs:
+  vault-secret:
+    description: 'Secret token for your Vault channel.'
+    required: true
+  project-name:
+    description: 'Name of your project (used for grouping artifacts).'
+    required: true
+  artifact-name:
+    description: 'Name of the artifact to store.'
+    required: true
+  file-path:
+    description: 'Path to the file to upload.'
+    required: true
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
+
+branding:
+  icon: 'upload'
+  color: 'blue'
