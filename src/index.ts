@@ -5,13 +5,11 @@ import { createReadStream, existsSync } from "fs";
 
 export async function run() {
   try {
-    // Получаем входные параметры
     const vaultSecret = getInput("vault-secret");
     const projectName = getInput("project-name");
     const artifactName = getInput("artifact-name");
     const filePath = getInput("file-path");
 
-    // Валидация входных параметров
     if (!vaultSecret) {
       throw new Error("vault-secret is required");
     }
@@ -25,22 +23,17 @@ export async function run() {
       throw new Error("file-path is required");
     }
 
-    // Проверяем существование файла
     if (!existsSync(filePath)) {
       throw new Error(`File not found: ${filePath}`);
     }
 
-    info(`Uploading artifact "${artifactName}" for project "${projectName}"`);
-    info(`File path: ${filePath}`);
+    info(`[Art.Vault]: Posting artifact '${projectName}.${artifactName}'`);
 
-    // Формируем URL
     const url = `https://art-vault.nanikin.ru/${projectName}/${artifactName}`;
 
-    // Создаем form data
     const form = new FormData();
     form.append("file", createReadStream(filePath));
 
-    // Выполняем POST запрос
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -52,11 +45,11 @@ export async function run() {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Upload failed with status ${response.status}: ${errorText}`);
+      throw new Error(`[Art.Vault]: Posting failed: ${errorText}`);
     }
 
     const responseText = await response.text();
-    info(`Upload successful! Response: ${responseText}`);
+    info(`[Art.Vault]: Posting successful!`);
 
   } catch (error) {
     setFailed((error as Error)?.message ?? "Unknown error");
