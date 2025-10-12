@@ -13,6 +13,8 @@ built on Telegram.
 
 ## Example usage
 
+
+#### - File upload
 ```yaml
 - name: Post artifact to Art.Vault
   uses: zerdicorp/art.vault-post@v1
@@ -20,4 +22,14 @@ built on Telegram.
     vault-secret: ${{ secrets.ART_VAULT_SECRET }}
     project-name: my-service
     artifact-path: ./target/build.zip
+```
+
+#### - Directory upload (zipped automatically)
+```yaml
+- name: Post artifact to Art.Vault
+  uses: zerdicorp/art.vault-post@v1
+  with:
+    vault-secret: ${{ secrets.ART_VAULT_SECRET }}
+    project-name: my-service
+    artifact-path: ./target/build
 ```
