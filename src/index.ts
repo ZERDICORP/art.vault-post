@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const FormData = require("form-data");
 import { createReadStream, existsSync, statSync, mkdirSync } from "fs";
 import * as path from "path";
-import * as archiver from "archiver";
+import archiver = require("archiver");
 import { createWriteStream } from "fs";
 
 async function createZipFromDirectory(dirPath: string): Promise<string> {
@@ -24,7 +24,7 @@ async function createZipFromDirectory(dirPath: string): Promise<string> {
       resolve(zipPath);
     });
 
-    archive.on('error', (err) => {
+    archive.on('error', (err: any) => {
       reject(err);
     });
 
