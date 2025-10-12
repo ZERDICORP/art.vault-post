@@ -29,14 +29,14 @@ jobs:
 
       - name: Download artifact using fetch
         run: |
-          curl -OJ "https://art-vault.nanikin.ru/art.vault-post/artifact.txt" \
+          curl -OJ "https://art-vault.nanikin.ru/art.vault-post/test-file.txt" \
             -H "Vault-Secret: ${{ secrets.VAULT_SECRET }}"
 
       - name: Verify downloaded file
         run: |
-          if [ -f "./test-artifact" ]; then
+          if [ -f "./test-file.txt" ]; then
             echo "✅ File downloaded successfully!"
-            if grep -q "Hello, world!" ./test-artifact; then
+            if grep -q "Hello, world!" ./test-file.txt; then
               echo "✅ File contains expected content! Test passed!"
             else
               echo "❌ File doesn't contain expected content! Test failed!"
