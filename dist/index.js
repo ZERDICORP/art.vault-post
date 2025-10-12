@@ -32180,6 +32180,99 @@ module.exports.implForWrapper = function (wrapper) {
 
 /***/ }),
 
+/***/ 9407:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = run;
+const core_1 = __nccwpck_require__(7484);
+const fetch = __nccwpck_require__(6705);
+const FormData = __nccwpck_require__(6454);
+const fs_1 = __nccwpck_require__(9896);
+const path = __importStar(__nccwpck_require__(6928));
+async function run() {
+    try {
+        const vaultSecret = (0, core_1.getInput)("vault-secret");
+        const projectName = (0, core_1.getInput)("project-name");
+        const filePath = (0, core_1.getInput)("file-path");
+        if (!vaultSecret) {
+            throw new Error("vault-secret is required");
+        }
+        if (!projectName) {
+            throw new Error("project-name is required");
+        }
+        if (!filePath) {
+            throw new Error("file-path is required");
+        }
+        if (!(0, fs_1.existsSync)(filePath)) {
+            throw new Error(`File not found: ${filePath}`);
+        }
+        const fileName = path.basename(filePath);
+        (0, core_1.info)(`[Art.Vault]: Posting artifact '${projectName}/${fileName}'`);
+        const url = `https://art-vault.nanikin.ru/${projectName}`;
+        const form = new FormData();
+        form.append("file", (0, fs_1.createReadStream)(filePath));
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Vault-Secret": vaultSecret,
+                ...form.getHeaders()
+            },
+            body: form
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`[Art.Vault]: Posting failed: ${errorText}`);
+        }
+        const responseText = await response.text();
+        (0, core_1.info)(`[Art.Vault]: Posting successful!`);
+    }
+    catch (error) {
+        (0, core_1.setFailed)(error?.message ?? "Unknown error");
+    }
+}
+if (!process.env.JEST_WORKER_ID) {
+    run();
+}
+
+
+/***/ }),
+
 /***/ 2078:
 /***/ ((module) => {
 
@@ -34123,75 +34216,12 @@ module.exports = /*#__PURE__*/JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = run;
-const core_1 = __nccwpck_require__(7484);
-const fetch = __nccwpck_require__(6705);
-const FormData = __nccwpck_require__(6454);
-const fs_1 = __nccwpck_require__(9896);
-async function run() {
-    try {
-        // Получаем входные параметры
-        const vaultSecret = (0, core_1.getInput)("vault-secret");
-        const projectName = (0, core_1.getInput)("project-name");
-        const artifactName = (0, core_1.getInput)("artifact-name");
-        const filePath = (0, core_1.getInput)("file-path");
-        // Валидация входных параметров
-        if (!vaultSecret) {
-            throw new Error("vault-secret is required");
-        }
-        if (!projectName) {
-            throw new Error("project-name is required");
-        }
-        if (!artifactName) {
-            throw new Error("artifact-name is required");
-        }
-        if (!filePath) {
-            throw new Error("file-path is required");
-        }
-        // Проверяем существование файла
-        if (!(0, fs_1.existsSync)(filePath)) {
-            throw new Error(`File not found: ${filePath}`);
-        }
-        (0, core_1.info)(`Uploading artifact "${artifactName}" for project "${projectName}"`);
-        (0, core_1.info)(`File path: ${filePath}`);
-        // Формируем URL
-        const url = `https://art-vault.nanikin.ru/${projectName}/${artifactName}`;
-        // Создаем form data
-        const form = new FormData();
-        form.append("file", (0, fs_1.createReadStream)(filePath));
-        // Выполняем POST запрос
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-                "Vault-Secret": vaultSecret,
-                ...form.getHeaders()
-            },
-            body: form
-        });
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Upload failed with status ${response.status}: ${errorText}`);
-        }
-        const responseText = await response.text();
-        (0, core_1.info)(`Upload successful! Response: ${responseText}`);
-    }
-    catch (error) {
-        (0, core_1.setFailed)(error?.message ?? "Unknown error");
-    }
-}
-if (!process.env.JEST_WORKER_ID) {
-    run();
-}
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(9407);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;

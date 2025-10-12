@@ -9,9 +9,6 @@ inputs:
   project-name:
     description: 'Name of your project (used for grouping artifacts).'
     required: true
-  artifact-name:
-    description: 'Name of the artifact to store.'
-    required: true
   file-path:
     description: 'Path to the file to upload.'
     required: true

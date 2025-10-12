@@ -2,12 +2,12 @@ import { getInput, setFailed, info } from "@actions/core";
 const fetch = require("node-fetch");
 const FormData = require("form-data");
 import { createReadStream, existsSync } from "fs";
+import * as path from "path";
 
 export async function run() {
   try {
     const vaultSecret = getInput("vault-secret");
     const projectName = getInput("project-name");
-    const artifactName = getInput("artifact-name");
     const filePath = getInput("file-path");
 
     if (!vaultSecret) {
@@ -15,9 +15,6 @@ export async function run() {
     }
     if (!projectName) {
       throw new Error("project-name is required");
-    }
-    if (!artifactName) {
-      throw new Error("artifact-name is required");
     }
     if (!filePath) {
       throw new Error("file-path is required");
@@ -27,9 +24,10 @@ export async function run() {
       throw new Error(`File not found: ${filePath}`);
     }
 
-    info(`[Art.Vault]: Posting artifact '${projectName}.${artifactName}'`);
+    const fileName = path.basename(filePath);
+    info(`[Art.Vault]: Posting artifact '${projectName}/${fileName}'`);
 
-    const url = `https://art-vault.nanikin.ru/${projectName}/${artifactName}`;
+    const url = `https://art-vault.nanikin.ru/${projectName}`;
 
     const form = new FormData();
     form.append("file", createReadStream(filePath));
@@ -51,8 +49,8 @@ export async function run() {
     const responseText = await response.text();
     info(`[Art.Vault]: Posting successful!`);
 
-  } catch (error) {
-    setFailed((error as Error)?.message ?? "Unknown error");
+  } catch (error: any) {
+    setFailed(error?.message ?? "Unknown error");
   }
 }
 
