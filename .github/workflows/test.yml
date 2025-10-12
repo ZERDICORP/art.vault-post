@@ -5,29 +5,29 @@ on:
     branches: [ master ]
 
 jobs:
-  test-upload:
+  test-file-upload:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Create test artifact
+      - name: Create test file
         run: |
           echo "Hello, world!" > test-file.txt
 
-      - name: Upload to Art.Vault
+      - name: Upload file to Art.Vault
         uses: ./
         with:
           vault-secret: ${{ secrets.VAULT_SECRET }}
           project-name: art.vault-post
-          file-path: ./test-file.txt
+          artifact-path: ./test-file.txt
 
-  test-download:
+  test-file-download:
     runs-on: ubuntu-latest
-    needs: test-upload
+    needs: test-file-upload
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download artifact using fetch
+      - name: Download file artifact
         run: |
           curl -OJ "https://art-vault.nanikin.ru/art.vault-post/test-file.txt" \
             -H "Vault-Secret: ${{ secrets.VAULT_SECRET }}"
@@ -37,12 +37,74 @@ jobs:
           if [ -f "./test-file.txt" ]; then
             echo "✅ File downloaded successfully!"
             if grep -q "Hello, world!" ./test-file.txt; then
-              echo "✅ File contains expected content! Test passed!"
+              echo "✅ File contains expected content! File test passed!"
             else
-              echo "❌ File doesn't contain expected content! Test failed!"
+              echo "❌ File doesn't contain expected content! File test failed!"
               exit 1
             fi
           else
             echo "❌ File not found!"
+            exit 1
+          fi
+
+  test-directory-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create test directory with files
+        run: |
+          mkdir -p test-directory
+          echo "File 1 content" > test-directory/file1.txt
+          echo "File 2 content" > test-directory/file2.txt
+          mkdir -p test-directory/subfolder
+          echo "Nested file content" > test-directory/subfolder/nested.txt
+
+      - name: Upload directory to Art.Vault (will be zipped)
+        uses: ./
+        with:
+          vault-secret: ${{ secrets.VAULT_SECRET }}
+          project-name: art.vault-post
+          artifact-path: ./test-directory
+
+  test-directory-download:
+    runs-on: ubuntu-latest
+    needs: test-directory-upload
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download directory artifact (as zip)
+        run: |
+          curl -OJ "https://art-vault.nanikin.ru/art.vault-post/test-directory.zip" \
+            -H "Vault-Secret: ${{ secrets.VAULT_SECRET }}"
+
+      - name: Extract and verify zip contents
+        run: |
+          if [ -f "./test-directory.zip" ]; then
+            echo "✅ Zip file downloaded successfully!"
+          
+            # Extract zip
+            unzip -q test-directory.zip
+          
+            # Check if files exist and have correct content
+            if [ -f "file1.txt" ] && [ -f "file2.txt" ] && [ -f "subfolder/nested.txt" ]; then
+              echo "✅ All files extracted successfully!"
+          
+              # Verify content
+              if grep -q "File 1 content" file1.txt && \
+                 grep -q "File 2 content" file2.txt && \
+                 grep -q "Nested file content" subfolder/nested.txt; then
+                echo "✅ All files contain expected content! Directory test passed!"
+              else
+                echo "❌ Some files don't contain expected content! Directory test failed!"
+                exit 1
+              fi
+            else
+              echo "❌ Not all expected files found after extraction!"
+              ls -la
+              exit 1
+            fi
+          else
+            echo "❌ Zip file not found!"
             exit 1
           fi

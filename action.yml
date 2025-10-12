@@ -9,8 +9,8 @@ inputs:
   project-name:
     description: 'Name of your project (used for grouping artifacts).'
     required: true
-  file-path:
-    description: 'Path to the file to upload.'
+  artifact-path:
+    description: 'Path to the file or directory to upload. Directories will be automatically zipped.'
     required: true
 
 runs:
