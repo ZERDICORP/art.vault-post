@@ -1,7 +1,6 @@
 # art.vault-post
 
-Post your artifact to [Art.Vault](https://t.me/artifact_vault_bot) — a lightweight temporary storage for CI/CD artifacts
-built on Telegram.
+Post your artifact to [Art.Vault](https://t.me/artifact_vault_bot) — a lightweight temporary storage for CI/CD artifacts built on Telegram.
 
 ## Inputs
 
