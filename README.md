@@ -17,7 +17,7 @@ built on Telegram.
 #### - File upload
 ```yaml
 - name: Post artifact to Art.Vault
-  uses: zerdicorp/art.vault-post@v1
+  uses: zerdicorp/art.vault-post@v2
   with:
     vault-secret: ${{ secrets.ART_VAULT_SECRET }}
     project-name: my-service
@@ -27,7 +27,7 @@ built on Telegram.
 #### - Directory upload (zipped automatically)
 ```yaml
 - name: Post artifact to Art.Vault
-  uses: zerdicorp/art.vault-post@v1
+  uses: zerdicorp/art.vault-post@v2
   with:
     vault-secret: ${{ secrets.ART_VAULT_SECRET }}
     project-name: my-service
