@@ -33,3 +33,5 @@ built on Telegram.
     project-name: my-service
     artifact-path: ./target/build
 ```
+
+<!-- Security scan triggered at 2026-08-31 16:58:46 -->
